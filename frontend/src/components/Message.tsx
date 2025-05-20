@@ -13,15 +13,15 @@ export default function Message({ message }: {message: ChatMessage}) {
                 ) }
             </div>
             <div>
-                <div className="flex gap-4 items-baseline">
+                <div className="flex gap-2 items-baseline">
                     <div className="font-semibold text-red-600">
                         {message.user.name}
                     </div>
-                    <div className="text-xs">
+                    <div className="text-xs text-[#747F8D] font-medium">
                         {message.time.toLocaleDateString()}
                     </div>
                 </div>
-                <div className="text-wrap wrap-anywhere">
+                <div className="text-wrap wrap-anywhere text-[#23262A] font-medium">
                     {message.body}
                 </div>
             </div>

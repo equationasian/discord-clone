@@ -2,10 +2,13 @@ import Avatar from "@mui/material/Avatar";
 import { users, type User } from "../data";
 import { List, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
 
-export default function ChatList() {
+export default function ChatList({ chatFilter }: { chatFilter: string }) {
     return (
-        <div>
-            <div className="font-semibold p-4 border-b">Direct Messages</div>
+        <div className="bg-gray-100 h-full">
+            <div className="font-semibold p-4 border-b-2 border-gray-200 text-[#23262A]">
+                {chatFilter === "direct" && "Direct Messages"}
+                {chatFilter === "group" && "Group Chats"}
+            </div>
             <div className="flex flex-col gap-2 overflow-auto scrollbar-hidden">
                 {users.map(user => (
                     <ChatListCard key={user.id} user={user} />
@@ -27,7 +30,7 @@ export function ChatListCard({ user }: { user: User }) {
                         <Avatar>placeholder</Avatar>
                     )}
                 </ListItemAvatar>
-                <ListItemText primary={user.name} />
+                <ListItemText className="text-[#23262A]" primary={user.name} />
             </ListItemButton>
         </List>
     );
