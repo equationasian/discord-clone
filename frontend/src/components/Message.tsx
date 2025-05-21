@@ -1,5 +1,5 @@
 import { Avatar } from "@mui/material";
-import type { ChatMessage } from "../data";
+import type { ChatMessage } from "../api/data";
 
 export default function Message({ message }: {message: ChatMessage}) {
     return (
@@ -18,7 +18,7 @@ export default function Message({ message }: {message: ChatMessage}) {
                         {message.user.name}
                     </div>
                     <div className="text-xs text-[#747F8D] font-medium">
-                        {message.time.toLocaleDateString()}
+                        
                     </div>
                 </div>
                 <div className="text-wrap wrap-anywhere text-[#23262A] font-medium">
