@@ -1,8 +1,15 @@
 import Avatar from "@mui/material/Avatar";
-import { users, type User } from "../data";
+import { getAllUsers, type User } from "../api/data";
 import { List, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function ChatList({ chatFilter }: { chatFilter: string }) {
+    const [userList, setUserList] = useState<User[]>([]);
+
+    useEffect(() => {
+        getAllUsers().then(user => setUserList([...userList, ...user]))
+    }, []);
+    
     return (
         <div className="bg-gray-100 h-full">
             <div className="font-semibold p-4 border-b-2 border-gray-200 text-[#23262A]">
@@ -10,7 +17,7 @@ export default function ChatList({ chatFilter }: { chatFilter: string }) {
                 {chatFilter === "group" && "Group Chats"}
             </div>
             <div className="flex flex-col gap-2 overflow-auto scrollbar-hidden">
-                {users.map(user => (
+                {userList.map(user => (
                     <ChatListCard key={user.id} user={user} />
                 ))}
             </div>

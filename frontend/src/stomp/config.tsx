@@ -11,14 +11,14 @@ export function Subscribe() {
     );
 }
 
-export function SendMessage() {
+export function SendMessage(message: string) {
     const stompClient = useStompClient();
 
     const send = () => {
         if (stompClient) {
             stompClient.publish({
                 destination: "/app/channel",
-                body: "Testing",
+                body: message,
             });
         }
         else {

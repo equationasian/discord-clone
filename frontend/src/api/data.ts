@@ -11,27 +11,33 @@ export interface ChatMessage {
     time: Date;
 };
 
-const latte: User = {
+export async function getAllUsers() {
+    const url = "http://localhost:8080/api/v1/users";
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
+}
+
+// test data
+const latte = {
     id: 1,
     name: "Latte",
     avatar: null
 };
 
-const mocha: User = {
-    id: 2,
+const mocha = {
     name: "Mocha",
     avatar: null
 };
 
-const domino: User = {
-    id: 3,
+const domino = {
     name: "Domino",
     avatar: null
 };
 
-export const users: User[] = [latte, mocha, domino];
+export const users = [latte, mocha, domino];
 
-export const messages: ChatMessage[] = [
+export const messages = [
     {
         id: 1,
         user: latte,
