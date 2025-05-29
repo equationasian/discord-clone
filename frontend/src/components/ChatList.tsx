@@ -7,7 +7,7 @@ export default function ChatList({ chatFilter }: { chatFilter: string }) {
     const [userList, setUserList] = useState<User[]>([]);
 
     useEffect(() => {
-        getAllUsers().then(user => setUserList([...userList, ...user]))
+        getAllUsers().then(user => setUserList([...user]))
     }, []);
     
     return (
