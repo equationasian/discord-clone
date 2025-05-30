@@ -1,5 +1,6 @@
 package com.example.chat_app.config;
 
+import com.example.chat_app.service.UserDetailsServiceImpl;
 import com.example.chat_app.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +20,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    private final UserService userService;
+    private final UserDetailsServiceImpl userService;
     private final CorsConfig corsConfig;
 
-    public WebSecurityConfig(UserService userService, CorsConfig corsConfig) {
+    public WebSecurityConfig(UserDetailsServiceImpl userService, CorsConfig corsConfig) {
         this.userService = userService;
         this.corsConfig = corsConfig;
     }
@@ -33,9 +34,10 @@ public class WebSecurityConfig {
         http.cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()));
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/api/v1/users/register").permitAll()
                 .anyRequest().authenticated());
         http.httpBasic(Customizer.withDefaults());
-        http.formLogin(form -> form.loginPage("http://localhost:5173/login"));
+        //http.formLogin(form -> form.loginPage("http://localhost:5173/login"));
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
         return http.build();
     }

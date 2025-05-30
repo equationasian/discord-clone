@@ -6,7 +6,7 @@ export default function Message({ message }: {message: ChatMessage}) {
         <div className="flex gap-4 mb-4">
             <div>
                 { message.user.avatar === null ? (
-                    <Avatar>{ message.user.name[0] }</Avatar>
+                    <Avatar>{ message.user.nickname ? message.user.nickname[0] : message.user.username[0] }</Avatar>
                 ) :
                 (
                     <Avatar>placeholder</Avatar>
@@ -15,7 +15,7 @@ export default function Message({ message }: {message: ChatMessage}) {
             <div>
                 <div className="flex gap-2 items-baseline">
                     <div className="font-semibold text-red-600">
-                        {message.user.name}
+                        {message.user.nickname ? message.user.nickname : message.user.username}
                     </div>
                     <div className="text-xs text-[#747F8D] font-medium">
                         

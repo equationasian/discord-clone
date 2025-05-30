@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { login } from "../api/auth";
 
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = () => {
-        login(username, password).then(result => console.log(result));
+        login(username, password).then(result => {
+
+            if (result.status === 401) {
+                console.log("unauth");
+            }
+            else {
+                sessionStorage.setItem("user", JSON.stringify(result));
+                navigate("/");
+            }
+        });
     };
 
     return (

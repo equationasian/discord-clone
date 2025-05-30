@@ -3,7 +3,6 @@ import { type ChatMessage } from '../api/data';
 import Divider from '@mui/material/Divider';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { useState, type FormEvent, type KeyboardEvent } from 'react';
-import { users } from '../api/data';
 
 export default function Chat() {
     const [messageList, setMessageList] = useState<ChatMessage[]>([]);
@@ -19,10 +18,16 @@ export default function Chat() {
 
     const sendMessage = (e: FormEvent) => {
         e.preventDefault();
+        const currentUser = sessionStorage.getItem("user");
+        const userInfo = currentUser ? JSON.parse(currentUser) : null;
+
+        if (!userInfo) {
+            console.log("login first");
+            return;
+        }
 
         const message = {
-            user: users[0],
-            //body: (e.target as CustomEventTarget).chatbox.value,
+            user: userInfo,
             body: textMsg,
             time: new Date()
         };
@@ -41,7 +46,10 @@ export default function Chat() {
     };
 
     function Subscribe() {
-        useSubscription("/topic/channel", message => setMessageList([...messageList, JSON.parse(message.body)]));
+        useSubscription("/topic/channel", message => {
+            console.log(message);
+            setMessageList([...messageList, JSON.parse(message.body)]);
+        });
 
         return (
             <div className="grow p-4 overflow-auto scrollbar-hidden">

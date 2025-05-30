@@ -4,6 +4,7 @@ import com.example.chat_app.dto.ChatUserDTO;
 import com.example.chat_app.entity.ChatUser;
 import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.LoginUser;
+import com.example.chat_app.request.RegisterUser;
 import com.example.chat_app.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,24 +27,23 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatUser>> allUsers() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<List<ChatUserDTO>> allUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PostMapping("/login")
     public ResponseEntity<ChatUserDTO> login(@RequestBody LoginUser user) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        ChatUserDetails authenticatedUser = (ChatUserDetails) auth.getPrincipal();
-        ChatUserDTO userDTO = new ChatUserDTO(authenticatedUser.getId(), authenticatedUser.getUsername(), authenticatedUser.getAvatar(), authenticatedUser.getNickname());
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(userService.loginUser(user));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ChatUserDTO> register(@RequestBody RegisterUser user) {
+        return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
     }
 }
