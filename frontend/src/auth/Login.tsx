@@ -9,13 +9,12 @@ export default function Login() {
 
     const handleLogin = () => {
         login(username, password).then(result => {
-
-            if (result.status === 401) {
-                console.log("unauth");
-            }
-            else {
+            if (result !== "unauth") {
                 sessionStorage.setItem("user", JSON.stringify(result));
                 navigate("/");
+            }
+            else {
+                console.log("unauth");
             }
         });
     };

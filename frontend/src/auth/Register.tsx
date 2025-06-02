@@ -10,9 +10,9 @@ export default function Register() {
 
     const handleRegister = () => {
         register(username, nickname, password).then(result => {
-            console.log(result);
+            //console.log(result);
 
-            if (result.status === 201) {
+            if (result !== "error") {
                 navigate("/login");
             }
             else {
