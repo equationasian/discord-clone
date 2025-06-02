@@ -1,7 +1,9 @@
 package com.example.chat_app.controller;
 
+import com.example.chat_app.dto.MessageDTO;
 import com.example.chat_app.entity.Message;
 import com.example.chat_app.service.ChatService;
+import com.example.chat_app.service.UserService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,7 @@ public class ChatController {
 
     @MessageMapping("/channel")
     @SendTo("/topic/channel")
-    public Message send(Message message) {
+    public MessageDTO send(MessageDTO message) {
         return chatService.assignId(message);
     }
 }

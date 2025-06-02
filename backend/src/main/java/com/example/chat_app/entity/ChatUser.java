@@ -18,12 +18,18 @@ public class ChatUser {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
 
     private String avatar;
+    private String nickname;
 
-    public ChatUser(String name, String avatar) {
-        this.name = name;
+    public ChatUser(String username, String password, String avatar, String nickname) {
+        this.username = username;
+        this.password = password;
         this.avatar = avatar;
+        this.nickname = nickname;
     }
 }

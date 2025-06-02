@@ -1,13 +1,22 @@
 package com.example.chat_app.controller;
 
+import com.example.chat_app.dto.ChatUserDTO;
 import com.example.chat_app.entity.ChatUser;
+import com.example.chat_app.request.ChatUserDetails;
+import com.example.chat_app.request.LoginUser;
+import com.example.chat_app.request.RegisterUser;
 import com.example.chat_app.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,6 +24,8 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @CrossOrigin("http://localhost:5173")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -22,7 +33,17 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatUser>> allUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    public ResponseEntity<List<ChatUserDTO>> allUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ChatUserDTO> login(@RequestBody LoginUser user) {
+        return ResponseEntity.ok(userService.loginUser(user));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ChatUserDTO> register(@RequestBody RegisterUser user) {
+        return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
     }
 }

@@ -11,10 +11,13 @@ type ChatFilter = {
 };
 
 export default function SideBar({ chatFilter, filterChange }: ChatFilter) {
+    const userInfo = sessionStorage.getItem("user");
+    const user = userInfo ? JSON.parse(userInfo) : null;
+    
     return (
         <div className="flex flex-col h-full justify-between p-4 items-center bg-gray-200">
             <div className="flex flex-col gap-2">
-                <Avatar>L</Avatar>
+                <Avatar>{user.nickname ? user.nickname[0] : user.username[0]}</Avatar>
                 <Divider flexItem />
             </div>
             <div className="flex flex-col gap-8">

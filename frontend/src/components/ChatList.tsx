@@ -4,11 +4,18 @@ import { List, ListItemAvatar, ListItemButton, ListItemText } from "@mui/materia
 import { useEffect, useState } from "react";
 
 export default function ChatList({ chatFilter }: { chatFilter: string }) {
-    const [userList, setUserList] = useState<User[]>([]);
+    const [userList, setUserList] = useState<User[] | null>(null);
 
     useEffect(() => {
-        getAllUsers().then(user => setUserList([...userList, ...user]))
+        getAllUsers().then(user => {
+            console.log(user);
+            setUserList(user);
+        });
     }, []);
+
+    if (!userList) {
+        return "loading";
+    }
     
     return (
         <div className="bg-gray-100 h-full">
@@ -31,13 +38,16 @@ export function ChatListCard({ user }: { user: User }) {
             <ListItemButton>
                 <ListItemAvatar>
                     { user.avatar === null ? (
-                        <Avatar>{ user.name[0] }</Avatar>
+                        <Avatar>{ user.username }</Avatar>
                     ) :
                     (
                         <Avatar>placeholder</Avatar>
                     )}
                 </ListItemAvatar>
-                <ListItemText className="text-[#23262A]" primary={user.name} />
+                <ListItemText 
+                    className="text-[#23262A]" 
+                    primary={user.nickname === null ? user.username : user.nickname} 
+                />
             </ListItemButton>
         </List>
     );
