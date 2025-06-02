@@ -10,8 +10,12 @@ export async function login(username: string, password: string) {
         credentials: "include",
         body: JSON.stringify({ username: username, password: password })
     });
-    const data = await response.json();
-    return data;
+    //const data = await response.json();
+    if (response.status === 401) {
+        return "unauth";
+    }
+
+    return await response.json();
 }
 
 export async function register(username: string, nickname: string | null, password: string)  {
@@ -27,6 +31,10 @@ export async function register(username: string, nickname: string | null, passwo
             password: password
         })
     });
-    const data = await response.json();
-    return data;
+    //const data = await response.json();
+    if (response.status !== 201) {
+        return "error";
+    }
+
+    return await response.json();
 }
