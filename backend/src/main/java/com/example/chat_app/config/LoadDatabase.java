@@ -1,7 +1,12 @@
 package com.example.chat_app.config;
 
-import com.example.chat_app.entity.ChatUser;
-import com.example.chat_app.repo.UserRepository;
+import com.example.chat_app.dto.ChatUserDTO;
+import com.example.chat_app.dto.MessageDTO;
+import com.example.chat_app.request.ChatroomRequest;
+import com.example.chat_app.request.RegisterUser;
+import com.example.chat_app.service.ChatService;
+import com.example.chat_app.service.ChatroomService;
+import com.example.chat_app.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -9,32 +14,37 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Configuration
 public class LoadDatabase {
     private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
-    private final PasswordEncoder passwordEncoder;
-
-    public LoadDatabase(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Bean
-    public CommandLineRunner initDatabase(UserRepository userRepository) {
+    public CommandLineRunner initDatabase(UserService userService, ChatService chatService, ChatroomService chatroomService) {
         return args -> {
-            ChatUser latte = new ChatUser("Latte", passwordEncoder.encode("lattepassword"), null, null);
-            ChatUser mocha = new ChatUser("Mocha", passwordEncoder.encode("mochapassword"), null, null);
-            ChatUser domino = new ChatUser("Domino", passwordEncoder.encode("dominopassword"), null, null);
-
-            userRepository.save(latte);
+            ChatUserDTO latte = userService.registerUser(new RegisterUser("Latte", null, "lattepassword"));
             log.info("Preloaded user Latte");
 
-            userRepository.save(mocha);
+            ChatUserDTO mocha = userService.registerUser(new RegisterUser("Mocha", null, "mochapassword"));
             log.info("Preloaded user Mocha");
 
-            userRepository.save(domino);
+            ChatUserDTO domino = userService.registerUser(new RegisterUser("Domino", null, "dominopassword"));
             log.info("Preloaded user Domino");
 
-            log.info(userRepository.findAll().toString());
+            chatroomService.createChatroom(new ChatroomRequest("General", List.of(latte, mocha, domino)));
+            log.info("Preloaded chatroom General with members Latte, Mocha, Domino");
+
+            MessageDTO latteMsg = new MessageDTO(latte, 1L, "latte latte latte", LocalDateTime.now());
+            chatService.saveMessage(latteMsg);
+            MessageDTO mochaMsg = new MessageDTO(mocha, 1L, "mocha mocha", LocalDateTime.now());
+            chatService.saveMessage(mochaMsg);
+            MessageDTO dominoMsg = new MessageDTO(domino, 1L, "domino", LocalDateTime.now());
+            chatService.saveMessage(dominoMsg);
+            log.info("Preloaded three messages to General");
+
+            log.info(chatroomService.getMessages(1L).toString());
         };
     }
 }

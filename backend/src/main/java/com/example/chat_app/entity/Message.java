@@ -16,9 +16,13 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private ChatUser user;
+
+    @ManyToOne
+    @JoinColumn(name = "chatroom_id", nullable = false)
+    private Chatroom chatroom;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String body;
@@ -26,8 +30,9 @@ public class Message {
     @Column(nullable = false)
     private LocalDateTime time;
 
-    public Message(ChatUser user, String body, LocalDateTime time) {
+    public Message(ChatUser user, Chatroom chatroom, String body, LocalDateTime time) {
         this.user = user;
+        this.chatroom = chatroom;
         this.body = body;
         this.time = time;
     }
