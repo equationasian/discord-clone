@@ -1,10 +1,12 @@
 package com.example.chat_app.request;
 
 import com.example.chat_app.entity.ChatUser;
+import com.example.chat_app.entity.Chatroom;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ChatUserDetails implements UserDetails {
     private final ChatUser user;
@@ -38,6 +40,10 @@ public class ChatUserDetails implements UserDetails {
 
     public String getNickname() {
         return user.getNickname();
+    }
+
+    public List<Chatroom> getChatrooms() {
+        return user.getChatrooms();
     }
 
     @Override

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function ChatList({ chatFilter }: { chatFilter: string }) {
     const [userList, setUserList] = useState<User[] | null>(null);
+    const currentUser = sessionStorage.getItem("user");
 
     useEffect(() => {
         getAllUsers().then(user => {
@@ -13,7 +14,7 @@ export default function ChatList({ chatFilter }: { chatFilter: string }) {
         });
     }, []);
 
-    if (!userList) {
+    if (!userList || !currentUser) {
         return "loading";
     }
     
@@ -24,7 +25,7 @@ export default function ChatList({ chatFilter }: { chatFilter: string }) {
                 {chatFilter === "group" && "Group Chats"}
             </div>
             <div className="flex flex-col gap-2 overflow-auto scrollbar-hidden">
-                {userList.map(user => (
+                {userList.filter(user => user.id !== JSON.parse(currentUser).id).map(user => (
                     <ChatListCard key={user.id} user={user} />
                 ))}
             </div>
@@ -38,7 +39,7 @@ export function ChatListCard({ user }: { user: User }) {
             <ListItemButton>
                 <ListItemAvatar>
                     { user.avatar === null ? (
-                        <Avatar>{ user.username }</Avatar>
+                        <Avatar>{ user.username[0] }</Avatar>
                     ) :
                     (
                         <Avatar>placeholder</Avatar>
