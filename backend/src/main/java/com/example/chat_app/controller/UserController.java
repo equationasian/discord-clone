@@ -37,6 +37,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<List<ChatUserDTO>> searchUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getAllUsersLikeUsername(username));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ChatUserDTO> login(@RequestBody LoginUser user) {
         return ResponseEntity.ok(userService.loginUser(user));

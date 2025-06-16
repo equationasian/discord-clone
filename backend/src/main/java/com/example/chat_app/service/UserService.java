@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,10 +50,20 @@ public class UserService {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public ChatUserDTO loginUser(LoginUser user) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    public List<ChatUserDTO> getAllUsersLikeUsername(String username) {
+        List<ChatUser> users = userRepository.findByUsernameContaining(username).orElseThrow();
+        return users.stream().map(ChatUserDTO::new).toList();
+    }
+
+    public ChatUserDTO getAuthenticatedUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         ChatUserDetails authenticatedUser = (ChatUserDetails) auth.getPrincipal();
         return new ChatUserDTO(authenticatedUser);
+    }
+
+    public ChatUserDTO loginUser(LoginUser user) {
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        return getAuthenticatedUser();
     }
 
     public ChatUserDTO registerUser(RegisterUser user) {
@@ -60,6 +72,7 @@ public class UserService {
         return new ChatUserDTO(savedUser);
     }
 
+    @Transactional
     public List<ChatUserDTO> addToChatroom(List<ChatUser> users, Chatroom chatroom) {
         List<ChatUser> updatedUsers = users.stream().map(user -> {
            List<Chatroom> updatedChatrooms = user.getChatrooms();
@@ -69,11 +82,23 @@ public class UserService {
         }).toList();
 
         return updatedUsers.stream().map(ChatUserDTO::new).toList();
+    }
 
-        /*List<Chatroom> updatedChatrooms = user.getChatrooms();
-        updatedChatrooms.add(chatroom);
-        user.setChatrooms(updatedChatrooms);
-        ChatUser updatedUser = userRepository.save(user);
-        return new ChatUserDTO(updatedUser);*/
+    @Transactional
+    public List<ChatroomDTO> getAllGroupChatrooms(Long userId) {
+        ChatUser user = userRepository.findById(userId).orElseThrow();
+        return user.getChatrooms().stream()
+                .filter(chatroom -> chatroom.getMembers().size() > 2)
+                .map(ChatroomDTO::new)
+                .toList();
+    }
+
+    @Transactional
+    public List<ChatroomDTO> getAllDirectChatrooms(Long userId) {
+        ChatUser user = userRepository.findById(userId).orElseThrow();
+        return user.getChatrooms().stream()
+                .filter(chatroom -> chatroom.getMembers().size() <= 2)
+                .map(ChatroomDTO::new)
+                .toList();
     }
 }
