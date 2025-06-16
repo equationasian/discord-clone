@@ -7,9 +7,12 @@ import com.example.chat_app.entity.ChatUser;
 import com.example.chat_app.entity.Chatroom;
 import com.example.chat_app.entity.Message;
 import com.example.chat_app.repo.ChatroomRepository;
+import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.ChatroomRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,16 @@ public class ChatroomService {
         return chatroomRepository.findById(id).orElseThrow();
     }
 
+    public List<ChatroomDTO> getAllGroupChatrooms() {
+        ChatUserDTO user = userService.getAuthenticatedUser();
+        return userService.getAllGroupChatrooms(user.getId());
+    }
+
+    public List<ChatroomDTO> getAllDirectChatrooms() {
+        ChatUserDTO user = userService.getAuthenticatedUser();
+        return userService.getAllDirectChatrooms(user.getId());
+    }
+
     @Transactional
     public List<ChatUserDTO> getMembers(Long id) {
         Chatroom chatroom = chatroomRepository.findById(id).orElseThrow();
@@ -47,6 +60,11 @@ public class ChatroomService {
     public ChatroomDTO createChatroom(ChatroomRequest request) {
         List<Long> userIds = request.getMembers().stream().map(ChatUserDTO::getId).toList();
         List<ChatUser> foundUsers = userService.getAllById(userIds);
+
+        ChatUserDTO currentUser = userService.getAuthenticatedUser();
+        ChatUser user = userService.getUserById(currentUser.getId());
+        foundUsers.add(user);
+
         Chatroom chatroom = new Chatroom(request.getTitle(), foundUsers, null);
         Chatroom savedChatroom = chatroomRepository.save(chatroom);
 

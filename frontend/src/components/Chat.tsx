@@ -1,13 +1,35 @@
 import Message from './Message';
-import { type ChatMessage } from '../api/data';
+import { getMessages, type ChatMessage, type Chatroom, type User } from '../api/data';
 import Divider from '@mui/material/Divider';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
 import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import LoadingChat from './LoadingChat';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { IconButton, Tooltip } from '@mui/material';
 
-export default function Chat() {
-    const [messageList, setMessageList] = useState<ChatMessage[]>([]);
+type ChatProps = {
+    chatroom: Chatroom;
+    user: User;
+    messages: ChatMessage[];
+    handleMessages: (message: ChatMessage) => void;
+};
+
+export default function Chat({ chatroom, user, messages, handleMessages }: ChatProps) {
+    const { isPending, isError, data, error } = useQuery({
+        queryKey: ["messages", chatroom],
+        queryFn: () => getMessages(chatroom),
+    });
     const [textMsg, setTextMsg] = useState("");
     const stompClient = useStompClient();
+
+    if (isPending) {
+        return <LoadingChat />;
+    }
+
+    if (isError) {
+        return error.message;
+    }
 
     const handleEnter = (e: KeyboardEvent) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -18,23 +40,19 @@ export default function Chat() {
 
     const sendMessage = (e: FormEvent) => {
         e.preventDefault();
-        const currentUser = sessionStorage.getItem("user");
-        const userInfo = currentUser ? JSON.parse(currentUser) : null;
-
-        if (!userInfo) {
-            console.log("login first");
-            return;
-        }
 
         const message = {
-            user: userInfo,
+            user: user,
+            chatroomId: chatroom.id,
             body: textMsg,
             time: new Date()
         };
+
+        console.log(message);
         
         if (stompClient) {
             stompClient.publish({
-                destination: "/app/channel",
+                destination: `/app/${chatroom.id}`,
                 body: JSON.stringify(message),
             });
         }
@@ -46,32 +64,44 @@ export default function Chat() {
     };
 
     function Subscribe() {
-        useSubscription("/topic/channel", message => {
+        useSubscription(`/topic/${chatroom.id}`, message => {
             console.log(message);
-            setMessageList([...messageList, JSON.parse(message.body)]);
+            handleMessages(JSON.parse(message.body));
         });
 
-        return (
-            <div className="grow p-4 overflow-auto scrollbar-hidden">
-                {messageList.map(m => (
-                    <Message key={m.id} message={m} />
-                ))}
-            </div>
-        );
+        return messages.map(m => <Message key={m.id} message={m} />);
+    }
+
+    function PreviousMessages() {
+        if (data) {
+            return data.map(message => <Message key={message.id} message={message} />);
+        }
     }
 
     return (
         <div className="flex flex-col justify-between h-full max-h-screen">
-            <div className='flex gap-4 items-center p-4 border-b-2 border-gray-200'>
-                <div className='font-semibold text-[#23262A]'>
-                    Title
+            <div className='flex justify-between items-center p-4 border-b-2 border-gray-200'>
+                <div className='flex gap-4 items-center'>
+                    <div className='font-semibold text-[#23262A]'>
+                        {chatroom.title}
+                    </div>
+                    <Divider orientation='vertical' flexItem />
+                    <div className='text-sm font-medium text-[#747F8D]'>
+                        Description of chat
+                    </div>
                 </div>
-                <Divider orientation='vertical' flexItem />
-                <div className='text-sm font-medium text-[#747F8D]'>
-                    Description of chat
+                <div>
+                    <Tooltip title="Add new members">
+                        <IconButton aria-label='add' size='small'>
+                            <PersonAddIcon />
+                        </IconButton>
+                    </Tooltip>
                 </div>
             </div>
-            <Subscribe />
+            <div className="grow p-4 overflow-auto scrollbar-hidden">
+                <PreviousMessages />
+                <Subscribe />
+            </div>
             <div className='flex flex-col gap-4 p-[0_16px_30px_16px]'>
                 <Divider flexItem />
                 <form>

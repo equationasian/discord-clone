@@ -18,7 +18,7 @@ export default function Message({ message }: {message: ChatMessage}) {
                         {message.user.nickname ? message.user.nickname : message.user.username}
                     </div>
                     <div className="text-xs text-[#747F8D] font-medium">
-                        
+                        {new Date(message.time).toLocaleDateString()}
                     </div>
                 </div>
                 <div className="text-wrap wrap-anywhere text-[#23262A] font-medium">

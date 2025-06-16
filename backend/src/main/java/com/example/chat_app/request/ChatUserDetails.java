@@ -46,6 +46,10 @@ public class ChatUserDetails implements UserDetails {
         return user.getChatrooms();
     }
 
+    public ChatUser getUser() {
+        return user;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return UserDetails.super.isAccountNonExpired();
