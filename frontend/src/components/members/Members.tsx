@@ -1,4 +1,4 @@
-import { getMembers } from "../api/data";
+import { getMembers } from "../../api/data";
 import { useQuery } from "@tanstack/react-query";
 import MemberCard from "./MemberCard";
 import List from "@mui/material/List";

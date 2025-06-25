@@ -1,5 +1,5 @@
 import Avatar from "@mui/material/Avatar";
-import { type Chatroom } from "../api/data";
+import { type Chatroom } from "../../api/data";
 import { IconButton, List, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -15,7 +15,7 @@ type ChatListProps = {
 export default function ChatList({ chatFilter, onChatClick, queryFn, handleOpen }: ChatListProps) {
     const { isPending, isError, data, error } = useQuery({
         queryKey: ["chatList", chatFilter],
-        queryFn: queryFn
+        queryFn: queryFn,
     });
 
     if (isPending) {
@@ -37,11 +37,13 @@ export default function ChatList({ chatFilter, onChatClick, queryFn, handleOpen 
                 </Tooltip>
             </div>
             <div className="flex flex-col gap-2 overflow-auto scrollbar-hidden">
-                <List>
-                    {data.map(user => (
-                        <ChatroomCard key={user.id} chatroom={user} onChatClick={onChatClick} />
-                    ))}
-                </List>
+                {data.length === 0 ? <p className="text-gray-400 p-2">No chatrooms found</p> : (
+                    <List>
+                        {data.map(user => (
+                            <ChatroomCard key={user.id} chatroom={user} onChatClick={onChatClick} />
+                        ))}
+                    </List>
+                )}
             </div>
         </div>
     );

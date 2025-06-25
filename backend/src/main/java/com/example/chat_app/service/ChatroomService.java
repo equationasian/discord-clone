@@ -35,12 +35,12 @@ public class ChatroomService {
     }
 
     public List<ChatroomDTO> getAllGroupChatrooms() {
-        ChatUserDTO user = userService.getAuthenticatedUser();
+        ChatUser user = userService.getAuthenticatedUser();
         return userService.getAllGroupChatrooms(user.getId());
     }
 
     public List<ChatroomDTO> getAllDirectChatrooms() {
-        ChatUserDTO user = userService.getAuthenticatedUser();
+        ChatUser user = userService.getAuthenticatedUser();
         return userService.getAllDirectChatrooms(user.getId());
     }
 
@@ -61,15 +61,13 @@ public class ChatroomService {
         List<Long> userIds = request.getMembers().stream().map(ChatUserDTO::getId).toList();
         List<ChatUser> foundUsers = userService.getAllById(userIds);
 
-        ChatUserDTO currentUser = userService.getAuthenticatedUser();
-        ChatUser user = userService.getUserById(currentUser.getId());
+        ChatUser user = userService.getAuthenticatedUser();
         foundUsers.add(user);
 
         Chatroom chatroom = new Chatroom(request.getTitle(), foundUsers, null);
         Chatroom savedChatroom = chatroomRepository.save(chatroom);
 
-        List<ChatUserDTO> updatedUsers = userService.addToChatroom(foundUsers, savedChatroom);
-        log.info(updatedUsers.toString());
+        userService.addToChatroom(foundUsers, savedChatroom);
 
         return new ChatroomDTO(savedChatroom);
     }

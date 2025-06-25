@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,9 +17,9 @@ public class MessageDTO {
     private ChatUserDTO user;
     private Long chatroomId;
     private String body;
-    private LocalDateTime time;
+    private Instant time;
 
-    public MessageDTO(ChatUserDTO user, Long chatroomId, String body, LocalDateTime time) {
+    public MessageDTO(ChatUserDTO user, Long chatroomId, String body, Instant time) {
         this.user = user;
         this.chatroomId = chatroomId;
         this.body = body;

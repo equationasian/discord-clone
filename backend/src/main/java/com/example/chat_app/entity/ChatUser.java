@@ -25,7 +25,6 @@ public class ChatUser {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_chatrooms", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "chatroom_id"))
-    @JsonManagedReference
     private List<Chatroom> chatrooms;
 
     private String avatar;

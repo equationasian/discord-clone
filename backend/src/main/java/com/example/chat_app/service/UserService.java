@@ -55,15 +55,15 @@ public class UserService {
         return users.stream().map(ChatUserDTO::new).toList();
     }
 
-    public ChatUserDTO getAuthenticatedUser() {
+    public ChatUser getAuthenticatedUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         ChatUserDetails authenticatedUser = (ChatUserDetails) auth.getPrincipal();
-        return new ChatUserDTO(authenticatedUser);
+        return authenticatedUser.getUser();
     }
 
     public ChatUserDTO loginUser(LoginUser user) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        return getAuthenticatedUser();
+        return new ChatUserDTO(getAuthenticatedUser());
     }
 
     public ChatUserDTO registerUser(RegisterUser user) {
@@ -73,7 +73,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<ChatUserDTO> addToChatroom(List<ChatUser> users, Chatroom chatroom) {
+    public void addToChatroom(List<ChatUser> users, Chatroom chatroom) {
         List<ChatUser> updatedUsers = users.stream().map(user -> {
            List<Chatroom> updatedChatrooms = user.getChatrooms();
            updatedChatrooms.add(chatroom);
@@ -81,7 +81,7 @@ public class UserService {
            return user;
         }).toList();
 
-        return updatedUsers.stream().map(ChatUserDTO::new).toList();
+        userRepository.saveAll(updatedUsers);
     }
 
     @Transactional
