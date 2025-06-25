@@ -1,7 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import { getUser, type User } from "../api/data";
 import { useQuery } from "@tanstack/react-query";
-import { List, ListItemButton } from "@mui/material";
 
 export default function SearchUser({ addUser }: { addUser: (user: User) => void }) {
     const [dropdown, setDropdown] = useState(false);
@@ -29,7 +28,7 @@ export default function SearchUser({ addUser }: { addUser: (user: User) => void 
     };
 
     return (
-        <div>
+        <div className="relative">
             <label htmlFor="members" className="text-sm font-semibold">ADD MEMBERS BY USERNAME</label>
             <input
                 name="members"
@@ -39,16 +38,20 @@ export default function SearchUser({ addUser }: { addUser: (user: User) => void 
                 value={search}
             />
             {dropdown && (
-                <List>
+                <ul className="absolute z-40 w-full bg-white rounded-md">
                     {data?.map(user => (
-                        <ListItemButton key={user.id} onClick={() => {
-                            addUser(user);
-                            setSearch("");
-                        }}>
+                        <li 
+                            key={user.id}
+                            onClick={() => {
+                                addUser(user);
+                                setSearch("");
+                            }}
+                            className="hover:bg-gray-300 p-3"
+                        >
                             {user.username}
-                        </ListItemButton>
+                        </li>
                     ))}
-                </List>
+                </ul>
             )}
         </div>
     );

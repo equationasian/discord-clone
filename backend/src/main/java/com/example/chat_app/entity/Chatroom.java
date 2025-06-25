@@ -20,7 +20,6 @@ public class Chatroom {
     private String title;
 
     @ManyToMany(mappedBy = "chatrooms", fetch = FetchType.LAZY)
-    @JsonBackReference
     private List<ChatUser> members;
 
     @OneToMany(cascade = CascadeType.ALL)

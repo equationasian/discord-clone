@@ -1,10 +1,10 @@
 import Divider from "@mui/material/Divider";
-import sticker from "../assets/science-fiction.png";
+import sticker from "../../assets/science-fiction.png";
 import IconButton from "@mui/material/IconButton";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useState } from "react";
-import CreateChatroom from "./CreateChatroom";
+import CreateChatroom from "../CreateChatroom";
 
 export default function LandingChatPage() {
     const [open, setOpen] = useState(false);

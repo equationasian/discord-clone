@@ -2,6 +2,26 @@ import { Avatar } from "@mui/material";
 import type { ChatMessage } from "../api/data";
 
 export default function Message({ message }: {message: ChatMessage}) {
+    const currentDate = new Date().getDate();
+    console.log(new Date(message.time).toLocaleTimeString());
+    const timestamp = () => {
+        const msgTime = new Date(message.time);
+        const options: Intl.DateTimeFormatOptions = {
+            hour: "numeric",
+            minute: "numeric"
+        };
+
+        if (msgTime.getDate() === currentDate) {
+            return `Today at ${new Intl.DateTimeFormat(undefined, options).format(msgTime)}`;
+        }
+        else if (msgTime.getDate() === currentDate - 1) {
+            return `Yesterday at ${msgTime.toLocaleTimeString()}`;
+        }
+        else {
+            return new Intl.DateTimeFormat().format(msgTime);
+        }
+    };
+
     return (
         <div className="flex gap-4 mb-4">
             <div>
@@ -14,11 +34,11 @@ export default function Message({ message }: {message: ChatMessage}) {
             </div>
             <div>
                 <div className="flex gap-2 items-baseline">
-                    <div className="font-semibold text-red-600">
+                    <div className="font-semibold text-blue-600">
                         {message.user.nickname ? message.user.nickname : message.user.username}
                     </div>
                     <div className="text-xs text-[#747F8D] font-medium">
-                        {new Date(message.time).toLocaleDateString()}
+                        {timestamp()}
                     </div>
                 </div>
                 <div className="text-wrap wrap-anywhere text-[#23262A] font-medium">

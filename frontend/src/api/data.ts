@@ -34,6 +34,11 @@ export async function getUser(username: string): Promise<User[]> {
     const response = await fetch(url, {
         credentials: "include"
     });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to find user");
+    }
+
     const data = await response.json();
     return data;
 }
@@ -43,6 +48,11 @@ export async function getAllGroupChats(): Promise<Chatroom[]> {
     const response = await fetch(url, {
         credentials: "include"
     });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to retrieve group chats");
+    }
+
     const data = await response.json();
     return data;
 }
@@ -52,6 +62,11 @@ export async function getAllDirectChats(): Promise<Chatroom[]> {
     const response = await fetch(url, {
         credentials: "include"
     });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to retrieve direct messages");
+    }
+
     const data = await response.json();
     return data;
 }
@@ -61,6 +76,11 @@ export async function getMessages(chatroom: Chatroom): Promise<ChatMessage[]> {
     const response = await fetch(url, {
         credentials: "include"
     });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to retrieve messages");
+    }
+
     const data = await response.json();
     return data;
 }
@@ -70,6 +90,11 @@ export async function getMembers(chatroomId: number): Promise<User[]> {
     const response = await fetch(url, {
         credentials: "include"
     });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to fetch chatroom members");
+    }
+
     const data = await response.json();
     return data;
 }
@@ -79,7 +104,8 @@ export async function createChatroom(title: string, members: User[]) {
     const response = await fetch(url, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Expose-Headers": "Location"
         },
         body: JSON.stringify({
             title: title,
@@ -89,8 +115,8 @@ export async function createChatroom(title: string, members: User[]) {
     });
     
     if (response.status !== 201) {
-        return "error"
+        throw new Error("Unable to create chatroom");
     }
-
+    
     return await response.json();
 }

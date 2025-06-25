@@ -1,6 +1,6 @@
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import type { User } from "../api/data";
+import type { User } from "../../api/data";
 import Avatar from "@mui/material/Avatar";
 import { ListItemButton } from "@mui/material";
 

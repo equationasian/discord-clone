@@ -10,9 +10,9 @@ export async function login(username: string, password: string) {
         credentials: "include",
         body: JSON.stringify({ username: username, password: password })
     });
-    //const data = await response.json();
+
     if (response.status === 401) {
-        return "unauth";
+        throw new Error("Username or password is incorrect");
     }
 
     return await response.json();
@@ -31,10 +31,20 @@ export async function register(username: string, nickname: string | null, passwo
             password: password
         })
     });
-    //const data = await response.json();
+
     if (response.status !== 201) {
-        return "error";
+        throw new Error("Username already exists");
     }
+    
 
     return await response.json();
+}
+
+export async function logout() {
+    const url = "http://localhost:8080/logout";
+    const response = await fetch(url, {
+        credentials: "include"
+    });
+    const data = await response.json();
+    return data;
 }

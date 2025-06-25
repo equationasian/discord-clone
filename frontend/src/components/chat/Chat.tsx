@@ -1,8 +1,8 @@
-import Message from './Message';
-import { getMessages, type ChatMessage, type Chatroom, type User } from '../api/data';
+import Message from '../Message';
+import { getMessages, type ChatMessage, type Chatroom, type User } from '../../api/data';
 import Divider from '@mui/material/Divider';
 import { useStompClient, useSubscription } from 'react-stomp-hooks';
-import { useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingChat from './LoadingChat';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -22,6 +22,16 @@ export default function Chat({ chatroom, user, messages, handleMessages }: ChatP
     });
     const [textMsg, setTextMsg] = useState("");
     const stompClient = useStompClient();
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (scrollRef.current) {
+            const item = scrollRef.current.lastElementChild;
+            if (item) {
+                item.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [messages]);
 
     if (isPending) {
         return <LoadingChat />;
@@ -98,7 +108,7 @@ export default function Chat({ chatroom, user, messages, handleMessages }: ChatP
                     </Tooltip>
                 </div>
             </div>
-            <div className="grow p-4 overflow-auto scrollbar-hidden">
+            <div ref={scrollRef} className="grow p-4 overflow-auto scrollbar-hidden">
                 <PreviousMessages />
                 <Subscribe />
             </div>

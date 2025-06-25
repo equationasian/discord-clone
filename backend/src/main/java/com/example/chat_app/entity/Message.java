@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -28,9 +28,9 @@ public class Message {
     private String body;
 
     @Column(nullable = false)
-    private LocalDateTime time;
+    private Instant time;
 
-    public Message(ChatUser user, Chatroom chatroom, String body, LocalDateTime time) {
+    public Message(ChatUser user, Chatroom chatroom, String body, Instant time) {
         this.user = user;
         this.chatroom = chatroom;
         this.body = body;
