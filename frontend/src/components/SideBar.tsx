@@ -1,24 +1,19 @@
-import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+import { Avatar, IconButton, Tooltip } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import GroupsIcon from '@mui/icons-material/Groups';
 import SettingsIcon from '@mui/icons-material/Settings';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Divider from '@mui/material/Divider';
 import type { User } from "../api/data";
-import { useState } from "react";
+import { Link } from "react-router";
 
 type ChatFilter = {
     user: User;
     chatFilter: string;
     filterChange: (filter: string) => void;
-    handleLogout: () => void;
 };
 
-export default function SideBar({ user, chatFilter, filterChange, handleLogout }: ChatFilter) {
-    const [settings, setSettings] = useState(false);
-
-    const handleClose = () => setSettings(!settings);
-    
+export default function SideBar({ user, chatFilter, filterChange }: ChatFilter) {
     return (
         <div className="flex flex-col h-full justify-between p-4 items-center bg-gray-200">
             <div className="flex flex-col gap-2">
@@ -53,13 +48,12 @@ export default function SideBar({ user, chatFilter, filterChange, handleLogout }
                     </IconButton>
                 </Tooltip>
                 <Tooltip title="Settings">
-                    <IconButton onClick={handleClose} aria-label="Settings" size="large">
-                        <SettingsIcon fontSize="inherit" className="text-gray-700" />
-                    </IconButton>
+                    <Link to="/profile/edit">
+                        <IconButton aria-label="Settings" size="large">
+                            <SettingsIcon fontSize="inherit" className="text-gray-700" />
+                        </IconButton>
+                    </Link>
                 </Tooltip>
-                <Menu open={settings} onClose={handleClose}>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
             </div>
         </div>
     );

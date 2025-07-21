@@ -11,11 +11,7 @@ export async function login(username: string, password: string) {
         body: JSON.stringify({ username: username, password: password })
     });
 
-    if (response.status === 401) {
-        throw new Error("Username or password is incorrect");
-    }
-
-    return await response.json();
+    return response;
 }
 
 export async function register(username: string, nickname: string | null, password: string)  {
@@ -31,13 +27,8 @@ export async function register(username: string, nickname: string | null, passwo
             password: password
         })
     });
-
-    if (response.status !== 201) {
-        throw new Error("Username already exists");
-    }
     
-
-    return await response.json();
+    return response;
 }
 
 export async function logout() {
@@ -45,6 +36,7 @@ export async function logout() {
     const response = await fetch(url, {
         credentials: "include"
     });
+    
     const data = await response.json();
     return data;
 }

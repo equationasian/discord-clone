@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { login } from "../api/auth";
 import Alert from "../components/Alert";
 
@@ -8,11 +8,17 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = async () => {
         try {
             const result = await login(username, password);
-            sessionStorage.setItem("user", JSON.stringify(result));
+            if (result.status !== 200) {
+                throw new Error("Username or password is incorrect");
+            }
+
+            const data = await result.json();
+            sessionStorage.setItem("user", JSON.stringify(data));
             navigate("/");
         }
         catch (error) {
@@ -24,7 +30,7 @@ export default function Login() {
 
     return (
         <>
-            { errorMsg && <Alert isError={true} message={errorMsg} /> }
+            { errorMsg && <Alert isError={true} message={errorMsg} />  || location.state && <Alert isError={false} message={location.state} /> }
             <div className="flex flex-col justify-between rounded-lg p-8 min-w-[550px] min-h-[400px] shadow-lg">
                 <div className="flex flex-col justify-center items-center gap-2">
                     <h1 className="font-semibold text-2xl">Welcome back!</h1>

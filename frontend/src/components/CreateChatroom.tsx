@@ -16,15 +16,20 @@ export default function CreateChatroom({ open, handleClose, handleChatroom }: Cr
     const [members, setMembers] = useState<User[]>([]);
     const queryClient = useQueryClient();
 
-    const handleCreate = () => {
-        createChatroom(title, members).then(result => {
-            console.log(result);
+    const handleCreate = async () => {
+        try {
+            const chatroom = await createChatroom(title, members);
             setTitle("");
             setMembers([]);
-            handleClose();
             queryClient.invalidateQueries({ queryKey: ["chatList"] });
-            handleChatroom(result);
-        });
+            handleChatroom(chatroom);
+            handleClose();
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+            }
+        }
     };
 
     const handleDelete = (userId: number) => {

@@ -34,14 +34,21 @@ public class ChatroomService {
         return chatroomRepository.findById(id).orElseThrow();
     }
 
-    public List<ChatroomDTO> getAllGroupChatrooms() {
+    public List<ChatroomDTO> filterChatrooms(String filter) {
         ChatUser user = userService.getAuthenticatedUser();
-        return userService.getAllGroupChatrooms(user.getId());
-    }
+        List<Chatroom> chatrooms = userService.getAllChatrooms(user.getId());
 
-    public List<ChatroomDTO> getAllDirectChatrooms() {
-        ChatUser user = userService.getAuthenticatedUser();
-        return userService.getAllDirectChatrooms(user.getId());
+        if (filter.equals("direct")) {
+            return chatrooms.stream()
+                    .filter(chatroom -> chatroom.getMembers().size() == 2)
+                    .map(ChatroomDTO::new)
+                    .toList();
+        }
+
+        return chatrooms.stream()
+                .filter(chatroom -> chatroom.getMembers().size() > 2)
+                .map(ChatroomDTO::new)
+                .toList();
     }
 
     @Transactional

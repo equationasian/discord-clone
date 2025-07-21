@@ -43,28 +43,14 @@ export async function getUser(username: string): Promise<User[]> {
     return data;
 }
 
-export async function getAllGroupChats(): Promise<Chatroom[]> {
-    const url = "http://localhost:8080/api/v1/chatrooms/group";
+export async function filterChatrooms(filter: string): Promise<Chatroom[]> {
+    const url = `http://localhost:8080/api/v1/chatrooms/filter/${filter}`;
     const response = await fetch(url, {
         credentials: "include"
     });
 
     if (response.status !== 200) {
-        throw new Error("Unable to retrieve group chats");
-    }
-
-    const data = await response.json();
-    return data;
-}
-
-export async function getAllDirectChats(): Promise<Chatroom[]> {
-    const url = "http://localhost:8080/api/v1/chatrooms/direct";
-    const response = await fetch(url, {
-        credentials: "include"
-    });
-
-    if (response.status !== 200) {
-        throw new Error("Unable to retrieve direct messages");
+        throw new Error("Unable to retrieve chatrooms");
     }
 
     const data = await response.json();

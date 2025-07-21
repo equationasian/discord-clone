@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<ChatUser, Long> {
     Optional<ChatUser> findByUsername(String username);
     Optional<List<ChatUser>> findByUsernameContaining(String username);
+    boolean existsByUsername(String username);
 }
