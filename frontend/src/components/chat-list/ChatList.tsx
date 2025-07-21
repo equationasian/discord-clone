@@ -1,5 +1,5 @@
 import Avatar from "@mui/material/Avatar";
-import { type Chatroom } from "../../api/data";
+import { filterChatrooms, type Chatroom } from "../../api/data";
 import { IconButton, List, ListItemAvatar, ListItemButton, ListItemText, Tooltip } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -8,14 +8,13 @@ import LoadingChatList from "./LoadingChatList";
 type ChatListProps = {
     chatFilter: string;
     onChatClick: (chatroom: Chatroom) => void;
-    queryFn: () => Promise<Chatroom[]>;
     handleOpen: () => void;
 };
 
-export default function ChatList({ chatFilter, onChatClick, queryFn, handleOpen }: ChatListProps) {
+export default function ChatList({ chatFilter, onChatClick, handleOpen }: ChatListProps) {
     const { isPending, isError, data, error } = useQuery({
         queryKey: ["chatList", chatFilter],
-        queryFn: queryFn,
+        queryFn: () => filterChatrooms(chatFilter),
     });
 
     if (isPending) {

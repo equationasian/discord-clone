@@ -5,15 +5,14 @@ import SideBar from './components/SideBar';
 import Chat from './components/chat/Chat';
 import ChatList from './components/chat-list/ChatList';
 import Members from './components/members/Members';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { getAllDirectChats, getAllGroupChats, type ChatMessage, type Chatroom } from './api/data';
+import { type ChatMessage, type Chatroom } from './api/data';
 import LandingChatPage from './components/chat/LandingChatPage';
 import { CircularProgress } from '@mui/material';
 import MemberLayout from './components/members/MemberLayout';
 import CreateChatroom from './components/CreateChatroom';
-import { logout } from './api/auth';
 
 function App() {
   const [chatFilter, setChatFilter] = useState("direct");
@@ -43,15 +42,6 @@ function App() {
     setChatroom(chatroom);
     setMessages([]);
   };
-
-  const handleLogout = () => {
-    logout().then(result => {
-      console.log(result);
-    });
-
-    sessionStorage.removeItem("user");
-    navigate("/login");
-  };
   
   return (
     <QueryClientProvider client={queryClient}>
@@ -62,13 +52,11 @@ function App() {
               user={JSON.parse(user)}
               chatFilter={chatFilter} 
               filterChange={handleFilterChange} 
-              handleLogout={handleLogout}
             />
           </Grid>
           <Grid size={2}>
             <ChatList 
               chatFilter={chatFilter} 
-              queryFn={chatFilter === "direct" ? getAllDirectChats : getAllGroupChats}
               onChatClick={handleChatroom}
               handleOpen={handleOpen}
             />

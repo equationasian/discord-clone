@@ -2,6 +2,7 @@ package com.example.chat_app.controller;
 
 import com.example.chat_app.dto.ChatUserDTO;
 import com.example.chat_app.entity.ChatUser;
+import com.example.chat_app.exception.ResourceExistsException;
 import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.LoginUser;
 import com.example.chat_app.request.RegisterUser;
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ChatUserDTO> register(@RequestBody RegisterUser user) {
+    public ResponseEntity<ChatUserDTO> register(@RequestBody RegisterUser user) throws ResourceExistsException {
         return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
     }
 }

@@ -4,6 +4,7 @@ import com.example.chat_app.dto.ChatUserDTO;
 import com.example.chat_app.dto.ChatroomDTO;
 import com.example.chat_app.entity.ChatUser;
 import com.example.chat_app.entity.Chatroom;
+import com.example.chat_app.exception.ResourceExistsException;
 import com.example.chat_app.repo.UserRepository;
 import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.LoginUser;
@@ -61,13 +62,19 @@ public class UserService {
         return authenticatedUser.getUser();
     }
 
+
     public ChatUserDTO loginUser(LoginUser user) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         return new ChatUserDTO(getAuthenticatedUser());
     }
 
-    public ChatUserDTO registerUser(RegisterUser user) {
-        ChatUser convert = new ChatUser(user.getUsername(), passwordEncoder.encode(user.getPassword()), null, user.getNickname());
+    public ChatUserDTO registerUser(RegisterUser user) throws ResourceExistsException {
+        String username = user.getUsername();
+        if (userRepository.existsByUsername(username)) {
+            throw new ResourceExistsException("Username already exists");
+        }
+
+        ChatUser convert = new ChatUser(username, passwordEncoder.encode(user.getPassword()), null, user.getNickname());
         ChatUser savedUser = userRepository.save(convert);
         return new ChatUserDTO(savedUser);
     }
@@ -85,20 +92,12 @@ public class UserService {
     }
 
     @Transactional
-    public List<ChatroomDTO> getAllGroupChatrooms(Long userId) {
+    public List<Chatroom> getAllChatrooms(Long userId) {
         ChatUser user = userRepository.findById(userId).orElseThrow();
-        return user.getChatrooms().stream()
-                .filter(chatroom -> chatroom.getMembers().size() > 2)
-                .map(ChatroomDTO::new)
-                .toList();
+        return user.getChatrooms();
     }
 
-    @Transactional
-    public List<ChatroomDTO> getAllDirectChatrooms(Long userId) {
-        ChatUser user = userRepository.findById(userId).orElseThrow();
-        return user.getChatrooms().stream()
-                .filter(chatroom -> chatroom.getMembers().size() <= 2)
-                .map(ChatroomDTO::new)
-                .toList();
+    public void uploadAvatar() {
+
     }
 }

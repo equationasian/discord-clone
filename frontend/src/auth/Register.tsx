@@ -12,8 +12,14 @@ export default function Register() {
 
     const handleRegister = async () => {
         try {
-            register(username, nickname, password);
-            navigate("/login");
+            const response = await register(username, nickname, password);
+            const data = await response.text();
+            
+            if (response.status !== 201) {
+                throw new Error(data);
+            }
+
+            navigate("/login", { state: "Registration successful" });
         }
         catch (error) {
             if (error instanceof Error) {

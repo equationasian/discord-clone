@@ -21,14 +21,9 @@ public class ChatroomController {
         this.chatroomService = chatroomService;
     }
 
-    @GetMapping("/group")
-    public ResponseEntity<List<ChatroomDTO>> allGroupChatrooms() {
-        return ResponseEntity.ok(chatroomService.getAllGroupChatrooms());
-    }
-
-    @GetMapping("/direct")
-    public ResponseEntity<List<ChatroomDTO>> allDirectChatrooms() {
-        return ResponseEntity.ok(chatroomService.getAllDirectChatrooms());
+    @GetMapping("/filter/{filter}")
+    public ResponseEntity<List<ChatroomDTO>> filterChatrooms(@PathVariable String filter) {
+        return ResponseEntity.ok(chatroomService.filterChatrooms(filter));
     }
 
     @GetMapping("/{id}")
