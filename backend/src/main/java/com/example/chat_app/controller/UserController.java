@@ -5,6 +5,7 @@ import com.example.chat_app.entity.ChatUser;
 import com.example.chat_app.exception.ResourceExistsException;
 import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.LoginUser;
+import com.example.chat_app.request.NicknameRequest;
 import com.example.chat_app.request.RegisterUser;
 import com.example.chat_app.service.UserService;
 import org.slf4j.Logger;
@@ -41,6 +42,11 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<List<ChatUserDTO>> searchUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getAllUsersLikeUsername(username));
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<ChatUserDTO> updateNickname(@PathVariable String username, @RequestBody NicknameRequest nickname) {
+        return ResponseEntity.ok(userService.updateNickname(username, nickname.getNickname()));
     }
 
     @PostMapping("/login")

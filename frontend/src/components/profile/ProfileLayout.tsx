@@ -7,12 +7,11 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 export default function ProfileLayout() {
     const navigate = useNavigate();
     
-
     const handleLogout = async () => {
         try {
-            await logout();
             sessionStorage.removeItem("user");
             navigate("/login");
+            await logout();
         }
         catch (error) {
             if (error instanceof Error) {

@@ -43,6 +43,22 @@ export async function getUser(username: string): Promise<User[]> {
     return data;
 }
 
+export async function updateNickname(username: string, nickname: string) {
+    const url = `http://localhost:8080/api/v1/users/${username}`;
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            nickname: nickname
+        }),
+        credentials: "include"
+    });
+
+    return response;
+}
+
 export async function filterChatrooms(filter: string): Promise<Chatroom[]> {
     const url = `http://localhost:8080/api/v1/chatrooms/filter/${filter}`;
     const response = await fetch(url, {

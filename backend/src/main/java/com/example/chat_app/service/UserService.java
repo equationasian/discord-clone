@@ -62,7 +62,6 @@ public class UserService {
         return authenticatedUser.getUser();
     }
 
-
     public ChatUserDTO loginUser(LoginUser user) {
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         return new ChatUserDTO(getAuthenticatedUser());
@@ -99,5 +98,13 @@ public class UserService {
 
     public void uploadAvatar() {
 
+    }
+
+    @Transactional
+    public ChatUserDTO updateNickname(String username, String nickname) {
+        ChatUser user = userRepository.findByUsername(username).orElseThrow();
+        user.setNickname(nickname);
+        ChatUser savedUser = userRepository.save(user);
+        return new ChatUserDTO(savedUser);
     }
 }
