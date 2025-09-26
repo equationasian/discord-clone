@@ -80,14 +80,13 @@ public class UserService {
 
     @Transactional
     public void addToChatroom(List<ChatUser> users, Chatroom chatroom) {
-        List<ChatUser> updatedUsers = users.stream().map(user -> {
-           List<Chatroom> updatedChatrooms = user.getChatrooms();
-           updatedChatrooms.add(chatroom);
-           user.setChatrooms(updatedChatrooms);
-           return user;
-        }).toList();
+        for (ChatUser user : users) {
+            List<Chatroom> updatedChatrooms = user.getChatrooms();
+            updatedChatrooms.add(chatroom);
+            user.setChatrooms(updatedChatrooms);
+        }
 
-        userRepository.saveAll(updatedUsers);
+        userRepository.saveAll(users);
     }
 
     @Transactional

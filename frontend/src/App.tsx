@@ -62,7 +62,7 @@ function App() {
             />
           </Grid>
           <Grid size="grow">
-            {chatroom === null ? <LandingChatPage /> : (
+            {chatroom === null ? <LandingChatPage handleChatroom={handleChatroom} /> : (
               <Chat 
                 chatroom={chatroom} 
                 user={JSON.parse(user)}

@@ -19,15 +19,14 @@ public class Chatroom {
 
     private String title;
 
-    @ManyToMany(mappedBy = "chatrooms", fetch = FetchType.LAZY)
-    private List<ChatUser> members;
+    private List<Long> memberIds;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
 
-    public Chatroom(String title, List<ChatUser> members, List<Message> messages) {
+    public Chatroom(String title, List<Long> memberIds, List<Message> messages) {
         this.title = title;
-        this.members = members;
+        this.memberIds = memberIds;
         this.messages = messages;
     }
 }

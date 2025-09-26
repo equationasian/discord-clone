@@ -45,7 +45,7 @@ export default function Profile() {
                 <h1 className="font-bold text-2xl mb-6">Profile</h1>
                 <div className="flex flex-col gap-6">
                     <form>
-                        <label htmlFor="avatar" className="font-semibold text-sm">AVATAR</label>
+                        <label htmlFor="avatar" className="font-semibold">Avatar</label>
                         <div className="flex gap-4 mt-2">
                             <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer">Change Avatar</button>
                             <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer">Remove Avatar</button>
@@ -53,14 +53,14 @@ export default function Profile() {
                     </form>
                     <Divider flexItem />
                     <form action={handleSubmit}>
-                        <label htmlFor="nickname" className="font-semibold text-sm">NICKNAME</label>
+                        <label htmlFor="nickname" className="font-semibold">Nickname</label>
                         <div className="flex gap-4 mt-2">
                             <input 
                                 name="nickname"
                                 autoComplete="no"
                                 className="rounded-md bg-gray-200 p-2 w-1/2"
                                 disabled={!edit}
-                                placeholder={userData.nickname === null ? "No nickname found" : `${userData.nickname}`}
+                                placeholder={userData.nickname === null ? "Choose a nickname" : `${userData.nickname}`}
                                 onChange={e => setNickname(e.target.value)}
                             />
                             { edit ? (

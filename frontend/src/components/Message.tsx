@@ -3,7 +3,7 @@ import type { ChatMessage } from "../api/data";
 
 export default function Message({ message }: {message: ChatMessage}) {
     const currentDate = new Date().getDate();
-    console.log(new Date(message.time).toLocaleTimeString());
+
     const timestamp = () => {
         const msgTime = new Date(message.time);
         const options: Intl.DateTimeFormatOptions = {
