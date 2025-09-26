@@ -18,7 +18,7 @@ export default function CreateChatroom({ open, handleClose, handleChatroom }: Cr
 
     const handleCreate = async () => {
         try {
-            const chatroom = await createChatroom(title, members);
+            const chatroom: Chatroom = await createChatroom(title, members);
             setTitle("");
             setMembers([]);
             queryClient.invalidateQueries({ queryKey: ["chatList"] });
@@ -44,7 +44,7 @@ export default function CreateChatroom({ open, handleClose, handleChatroom }: Cr
 
     return (
         <Backdrop open={open}>
-            <form action={handleCreate} className="bg-white p-8 rounded-lg flex flex-col gap-4">
+            <form action={handleCreate} className="bg-white p-10 rounded-lg flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <h1 className="font-semibold text-xl">Create a new chatroom</h1>
                     <IconButton onClick={() => {
@@ -55,11 +55,14 @@ export default function CreateChatroom({ open, handleClose, handleChatroom }: Cr
                     </IconButton>
                 </div>
                 <div>
-                    <label htmlFor="title" className="text-sm font-semibold">TITLE</label>
+                    <label htmlFor="title" className="font-semibold">
+                        Title
+                        <span className="ml-1 text-red-500">*</span>
+                    </label>
                     <input 
                         name="title" 
                         autoComplete="no"
-                        className="w-full rounded-lg bg-gray-200 p-2"
+                        className="w-full rounded-lg border-3 border-solid border-violet-400 p-2 mt-2 focus:outline-none focus:border-violet-700"
                         onChange={e => setTitle(e.target.value)}
                         required
                     />
@@ -70,7 +73,7 @@ export default function CreateChatroom({ open, handleClose, handleChatroom }: Cr
                         {members.map(member => <Chip key={member.id} label={member.username} onDelete={() => handleDelete(member.id)} />)}
                     </div>
                 )}
-                <button className="bg-purple-500 text-white font-semibold p-3 rounded-lg hover:bg-purple-700 hover:cursor-pointer">Create</button>
+                <button className="bg-purple-500 text-white font-semibold p-3 rounded-lg mt-4 hover:bg-purple-700 hover:cursor-pointer">Create Chatroom</button>
             </form>
         </Backdrop>
     );

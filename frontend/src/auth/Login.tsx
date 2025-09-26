@@ -31,35 +31,41 @@ export default function Login() {
     return (
         <>
             { errorMsg && <Alert isError={true} message={errorMsg} />  || location.state && <Alert isError={false} message={location.state} /> }
-            <div className="flex flex-col justify-between rounded-lg p-8 min-w-[550px] min-h-[400px] shadow-lg">
+            <div className="flex flex-col justify-around rounded-lg p-8 min-w-[550px] min-h-[400px] shadow-lg bg-slate-50 text-gray-800">
                 <div className="flex flex-col justify-center items-center gap-2">
                     <h1 className="font-semibold text-2xl">Welcome back!</h1>
                     <p>We're so excited to see you again!</p>
                 </div>
                 <form action={handleLogin} className="flex flex-col gap-4">
                     <div>
-                        <label htmlFor="username" className="font-semibold text-sm">USERNAME</label>
+                        <label htmlFor="username" className="font-semibold">
+                            Username
+                            <span className="ml-1 text-red-500">*</span>
+                        </label>
                         <input 
                             name="username" 
                             autoComplete="no" 
-                            className="w-full rounded-lg bg-gray-200 p-2"
+                            className="w-full rounded-lg border-3 border-solid border-violet-400 p-2 mt-2 focus:outline-none focus:border-violet-700"
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div>
-                        <label htmlFor="password" className="font-semibold text-sm">PASSWORD</label>
+                        <label htmlFor="password" className="font-semibold">
+                            Password
+                            <span className="ml-1 text-red-500">*</span>
+                        </label>
                         <input 
                             name="password" 
                             type="password"
-                            className="w-full rounded-lg bg-gray-200 p-2"
+                            className="w-full rounded-lg border-3 border-solid border-violet-400 p-2 mt-2 focus:outline-none focus:border-violet-700"
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button className="w-full rounded-lg bg-blue-500 text-white p-2">Log in</button>
+                    <button className="w-full rounded-lg bg-purple-500 text-white p-2 hover:bg-violet-500 hover:cursor-pointer transition-colors duration-200">Log In</button>
                 </form>
-                <p>
-                    Need an account?
-                    <Link to="/register" className="text-blue-500"> Register</Link>
+                <p className="text-sm">
+                    <span>Need an account? </span>
+                    <Link to="/register" className="text-purple-500 hover:underline">Register</Link>
                 </p>
             </div>
         </>

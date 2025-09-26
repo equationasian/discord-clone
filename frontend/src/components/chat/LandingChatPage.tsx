@@ -5,8 +5,9 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useState } from "react";
 import CreateChatroom from "../CreateChatroom";
+import type { Chatroom } from "../../api/data";
 
-export default function LandingChatPage() {
+export default function LandingChatPage({ handleChatroom }: { handleChatroom: (chatroom: Chatroom) => void }) {
     const [open, setOpen] = useState(false);
 
     const handleClose = () => setOpen(!open);
@@ -45,7 +46,7 @@ export default function LandingChatPage() {
                             <AddCircleOutlineIcon />
                             <span className="ml-2">Create a new one</span>
                         </button>
-                        <CreateChatroom open={open} handleClose={handleClose} />
+                        <CreateChatroom open={open} handleClose={handleClose} handleChatroom={handleChatroom} />
                     </div>
                     <a href="https://www.flaticon.com/free-stickers/robot" title="robot stickers" className="text-[#747F8D] text-xs">Robot stickers created by Stickers - Flaticon</a>
                 </div>

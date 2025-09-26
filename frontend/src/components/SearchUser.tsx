@@ -29,11 +29,11 @@ export default function SearchUser({ addUser }: { addUser: (user: User) => void 
 
     return (
         <div className="relative">
-            <label htmlFor="members" className="text-sm font-semibold">ADD MEMBERS BY USERNAME</label>
+            <label htmlFor="members" className="font-semibold">Add members by username</label>
             <input
                 name="members"
                 autoComplete="no"
-                className="w-full rounded-lg bg-gray-200 p-2"
+                className="w-full rounded-lg border-3 border-solid border-violet-400 p-2 mt-2 focus:outline-none focus:border-violet-700"
                 onChange={e => handleSearch(e)}
                 value={search}
             />

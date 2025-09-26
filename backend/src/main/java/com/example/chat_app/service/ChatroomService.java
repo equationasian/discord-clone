@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,18 +36,18 @@ public class ChatroomService {
     }
 
     public List<ChatroomDTO> filterChatrooms(String filter) {
-        ChatUser user = userService.getAuthenticatedUser();
-        List<Chatroom> chatrooms = userService.getAllChatrooms(user.getId());
+        Long userId = userService.getAuthenticatedUser().getId();
+        List<Chatroom> chatrooms = userService.getAllChatrooms(userId);
 
         if (filter.equals("direct")) {
             return chatrooms.stream()
-                    .filter(chatroom -> chatroom.getMembers().size() == 2)
+                    .filter(chatroom -> chatroom.getMemberIds().size() == 2)
                     .map(ChatroomDTO::new)
                     .toList();
         }
 
         return chatrooms.stream()
-                .filter(chatroom -> chatroom.getMembers().size() > 2)
+                .filter(chatroom -> chatroom.getMemberIds().size() > 2)
                 .map(ChatroomDTO::new)
                 .toList();
     }
@@ -54,7 +55,8 @@ public class ChatroomService {
     @Transactional
     public List<ChatUserDTO> getMembers(Long id) {
         Chatroom chatroom = chatroomRepository.findById(id).orElseThrow();
-        return chatroom.getMembers().stream().map(ChatUserDTO::new).toList();
+        List<ChatUser> users = userService.getAllById(chatroom.getMemberIds());
+        return users.stream().map(ChatUserDTO::new).toList();
     }
 
     @Transactional
@@ -65,13 +67,15 @@ public class ChatroomService {
 
     @Transactional
     public ChatroomDTO createChatroom(ChatroomRequest request) {
-        List<Long> userIds = request.getMembers().stream().map(ChatUserDTO::getId).toList();
+        List<Long> userIds = new ArrayList<>(request.getMembers().stream().map(ChatUserDTO::getId).toList());
         List<ChatUser> foundUsers = userService.getAllById(userIds);
 
-        ChatUser user = userService.getAuthenticatedUser();
+        Long currentUserId = userService.getAuthenticatedUser().getId();
+        ChatUser user = userService.getUserById(currentUserId);
         foundUsers.add(user);
+        userIds.add(currentUserId);
 
-        Chatroom chatroom = new Chatroom(request.getTitle(), foundUsers, null);
+        Chatroom chatroom = new Chatroom(request.getTitle(), userIds, null);
         Chatroom savedChatroom = chatroomRepository.save(chatroom);
 
         userService.addToChatroom(foundUsers, savedChatroom);
