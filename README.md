@@ -7,8 +7,8 @@ The server is pre-loaded with 3 users for quick testing, or you can choose to re
 - Mocha / mochapassword
 - Domino / dominopassword
 
-![Imgur Image](https://imgur.com/LSV2GPR.png) 
-![Imgur Image](https://imgur.com/SEpCiYg.png)
+![Imgur Image](https://imgur.com/f4OAWMA.png) 
+![Imgur Image](https://imgur.com/cx9jFMU.png)
 
 On successful login, users are redirected to the main chat page where all existing chatrooms are displayed on the left, or a new chatroom can be created.
 
@@ -16,8 +16,12 @@ On successful login, users are redirected to the main chat page where all existi
 
 Members of a chatroom are added by username. As the user begins typing, a dropdown menu will appear with all users matching the username. If only one member is added, the chatroom will be displayed under "Direct Messages".
 
-![Imgur Image](https://imgur.com/xTJ2bmi.png)
-![Imgur Image](https://imgur.com/Z850nzr.png)
+![Imgur Image](https://imgur.com/EKN1mZ9.png)
+![Imgur Image](https://imgur.com/y7bZJNI.png)
+
+Users can change their nickname and profile pictures through settings.
+
+![Imgur Image](https://imgur.com/usd1GV2.png)
 
 ## In Progress
 - Custom profile pictures
