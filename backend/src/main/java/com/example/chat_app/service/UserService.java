@@ -1,7 +1,8 @@
 package com.example.chat_app.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.chat_app.dto.ChatUserDTO;
-import com.example.chat_app.dto.ChatroomDTO;
 import com.example.chat_app.entity.ChatUser;
 import com.example.chat_app.entity.Chatroom;
 import com.example.chat_app.exception.ResourceExistsException;
@@ -9,18 +10,21 @@ import com.example.chat_app.repo.UserRepository;
 import com.example.chat_app.request.ChatUserDetails;
 import com.example.chat_app.request.LoginUser;
 import com.example.chat_app.request.RegisterUser;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -79,7 +83,9 @@ public class UserService {
     }
 
     @Transactional
-    public void addToChatroom(List<ChatUser> users, Chatroom chatroom) {
+    public void addToChatroom(List<Long> userIds, Chatroom chatroom) {
+        List<ChatUser> users = userRepository.findAllById(userIds);
+
         for (ChatUser user : users) {
             List<Chatroom> updatedChatrooms = user.getChatrooms();
             updatedChatrooms.add(chatroom);
@@ -95,8 +101,26 @@ public class UserService {
         return user.getChatrooms();
     }
 
-    public void uploadAvatar() {
+    public Map uploadAvatar(MultipartFile profilePic) throws IOException {
+        Dotenv dotenv = Dotenv.load();
+        Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
+        return cloudinary.uploader().upload(profilePic.getBytes(), ObjectUtils.emptyMap());
+    }
 
+    @Transactional
+    public ChatUserDTO updateAvatar(MultipartFile profilePic) {
+        try {
+            Map uploadResult = uploadAvatar(profilePic);
+            ChatUser user = userRepository.findById(getAuthenticatedUser().getId()).orElseThrow();
+            user.setAvatar((String)uploadResult.get("secure_url"));
+            ChatUser updatedUser = userRepository.save(user);
+            return new ChatUserDTO(updatedUser);
+        }
+        catch (IOException e) {
+            log.error("uploadAvatar error " + e.getMessage());
+        }
+
+        return new ChatUserDTO();
     }
 
     @Transactional

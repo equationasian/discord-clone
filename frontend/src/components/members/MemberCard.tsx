@@ -6,11 +6,7 @@ import { ListItemButton } from "@mui/material";
 
 export default function MemberCard({ user }: { user: User }) {
     const avatar = () => {
-        console.log(user);
-        if (user.avatar) {
-            return user.avatar;
-        }
-        else if (user.nickname) {
+        if (user.nickname) {
             return user.nickname[0];
         }
         
@@ -20,7 +16,11 @@ export default function MemberCard({ user }: { user: User }) {
     return (
         <ListItemButton>
             <ListItemAvatar>
-                <Avatar>{avatar()}</Avatar>
+                { user.avatar ? (
+                    <Avatar src={user.avatar} />
+                ) : (
+                    <Avatar>{avatar()}</Avatar>
+                ) }
             </ListItemAvatar>
             <ListItemText 
                 className="text-[#23262A]" 

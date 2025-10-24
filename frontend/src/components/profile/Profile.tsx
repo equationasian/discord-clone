@@ -1,6 +1,6 @@
-import { Divider } from "@mui/material";
-import { updateNickname, type User } from "../../api/data";
-import { useState } from "react";
+import { Avatar, Divider } from "@mui/material";
+import { updateNickname, uploadProfilePic, type User } from "../../api/data";
+import { useState, type FormEvent } from "react";
 import Alert from "../Alert";
 
 export default function Profile() {
@@ -15,7 +15,7 @@ export default function Profile() {
 
     const userData: User = JSON.parse(user);
 
-    const handleEdit = (e) => {
+    const handleEdit = (e: FormEvent) => {
         e.preventDefault();
         setEdit(!edit);
     };
@@ -38,17 +38,43 @@ export default function Profile() {
         }
     };
 
+    const handleProfilePic = async (event) => {
+        const formData = new FormData();
+
+        try {
+            formData.append("profile", event.target.files[0]);
+            const userData: User = await uploadProfilePic(formData);
+            sessionStorage.setItem("user", JSON.stringify(userData));
+        }
+        catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <>
             { errorMsg && <Alert isError={true} message={errorMsg} /> }
             <div className="p-10">
                 <h1 className="font-bold text-2xl mb-6">Profile</h1>
                 <div className="flex flex-col gap-6">
-                    <form>
+                    <form className="flex flex-col gap-6">
                         <label htmlFor="avatar" className="font-semibold">Avatar</label>
-                        <div className="flex gap-4 mt-2">
-                            <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer">Change Avatar</button>
-                            <button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer">Remove Avatar</button>
+                        <div>
+                            { userData.avatar === null ? (
+                                <Avatar sx={{ height: 150, width: 150, fontSize: 100 }}>{ userData.nickname ? userData.nickname[0] : userData.username[0] }</Avatar>
+                            ): (
+                                <Avatar sx={{ height: 150, width: 150 }} src={userData.avatar} />
+                            )}
+                        </div>
+                        <div className="flex gap-4">
+                            <label htmlFor="uploadPic" className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer hover:bg-violet-500 transition-colors duration-200">
+                            {/*<button className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer hover:bg-violet-500 transition-colors duration-200">
+                                Change Avatar
+                            </button>*/}
+                                Change Avatar
+                            </label>
+                            <input id="uploadPic" type="file" hidden onChange={e => handleProfilePic(e)} />
+                            <button disabled={userData.avatar === null} className="px-4 py-2 bg-purple-500 text-white rounded-md hover:cursor-pointer hover:bg-violet-500 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-default">Remove Avatar</button>
                         </div>
                     </form>
                     <Divider flexItem />
@@ -65,13 +91,13 @@ export default function Profile() {
                             />
                             { edit ? (
                                 <button 
-                                    className="bg-purple-500 px-4 rounded-md text-white hover:cursor-pointer"
+                                    className="bg-purple-500 px-4 rounded-md text-white hover:cursor-pointer hover:bg-violet-500 transition-colors duration-200"
                                 >
                                     Submit
                                 </button>
                             ) : (
                                 <button 
-                                    className="bg-purple-500 px-4 rounded-md text-white hover:cursor-pointer"
+                                    className="bg-purple-500 px-4 rounded-md text-white hover:cursor-pointer hover:bg-violet-500 transition-colors duration-200"
                                     onClick={handleEdit}
                                 >
                                     Edit

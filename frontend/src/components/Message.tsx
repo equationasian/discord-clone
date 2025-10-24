@@ -29,7 +29,7 @@ export default function Message({ message }: {message: ChatMessage}) {
                     <Avatar>{ message.user.nickname ? message.user.nickname[0] : message.user.username[0] }</Avatar>
                 ) :
                 (
-                    <Avatar>placeholder</Avatar>
+                    <Avatar src={message.user.avatar} />
                 ) }
             </div>
             <div>

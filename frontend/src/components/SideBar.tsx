@@ -14,10 +14,22 @@ type ChatFilter = {
 };
 
 export default function SideBar({ user, chatFilter, filterChange }: ChatFilter) {
+    const avatar = () => {
+        if (user.nickname) {
+            return user.nickname[0];
+        }
+        
+        return user.username[0];
+    };
+
     return (
         <div className="flex flex-col h-full justify-between p-4 items-center bg-gray-200">
             <div className="flex flex-col gap-2">
-                <Avatar>{user.nickname ? user.nickname[0] : user.username[0]}</Avatar>
+                { user.avatar ? (
+                    <Avatar src={user.avatar} />
+                ) : (
+                    <Avatar>{avatar()}</Avatar>
+                ) }
                 <Divider flexItem />
             </div>
             <div className="flex flex-col gap-8">
