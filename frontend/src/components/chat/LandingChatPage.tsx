@@ -40,7 +40,7 @@ export default function LandingChatPage({ handleChatroom }: { handleChatroom: (c
                         <p>Select a chatroom</p>
                         <Divider flexItem>or</Divider>
                         <button 
-                            className="flex justify-center bg-purple-500 text-white font-semibold p-3 rounded-lg hover:bg-purple-700 hover:cursor-pointer"
+                            className="flex justify-center bg-purple-500 text-white font-semibold p-3 rounded-lg hover:bg-violet-500 hover:cursor-pointer transition-colors duration-200"
                             onClick={handleClose}
                         >
                             <AddCircleOutlineIcon />

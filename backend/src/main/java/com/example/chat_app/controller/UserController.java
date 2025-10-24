@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,5 +58,10 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<ChatUserDTO> register(@RequestBody RegisterUser user) throws ResourceExistsException {
         return new ResponseEntity<>(userService.registerUser(user), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ChatUserDTO> uploadProfilePic(@RequestParam("profile") MultipartFile profilePic) {
+        return ResponseEntity.ok(userService.updateAvatar(profilePic));
     }
 }

@@ -122,3 +122,18 @@ export async function createChatroom(title: string, members: User[]) {
     
     return await response.json();
 }
+
+export async function uploadProfilePic(formData: FormData) {
+    const url = "http://localhost:8080/api/v1/users/upload";
+    const response = await fetch(url, {
+        method: "POST",
+        body: formData,
+        credentials: "include"
+    });
+
+    if (response.status !== 200) {
+        throw new Error("Unable to upload picture");
+    }
+
+    return await response.json();
+}

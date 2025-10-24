@@ -41,13 +41,13 @@ public class ChatroomService {
 
         if (filter.equals("direct")) {
             return chatrooms.stream()
-                    .filter(chatroom -> chatroom.getMemberIds().size() == 2)
+                    .filter(chatroom -> chatroom.getMembers().size() == 2)
                     .map(ChatroomDTO::new)
                     .toList();
         }
 
         return chatrooms.stream()
-                .filter(chatroom -> chatroom.getMemberIds().size() > 2)
+                .filter(chatroom -> chatroom.getMembers().size() > 2)
                 .map(ChatroomDTO::new)
                 .toList();
     }
@@ -55,7 +55,7 @@ public class ChatroomService {
     @Transactional
     public List<ChatUserDTO> getMembers(Long id) {
         Chatroom chatroom = chatroomRepository.findById(id).orElseThrow();
-        List<ChatUser> users = userService.getAllById(chatroom.getMemberIds());
+        List<ChatUser> users = chatroom.getMembers();
         return users.stream().map(ChatUserDTO::new).toList();
     }
 
@@ -68,17 +68,15 @@ public class ChatroomService {
     @Transactional
     public ChatroomDTO createChatroom(ChatroomRequest request) {
         List<Long> userIds = new ArrayList<>(request.getMembers().stream().map(ChatUserDTO::getId).toList());
-        List<ChatUser> foundUsers = userService.getAllById(userIds);
-
         Long currentUserId = userService.getAuthenticatedUser().getId();
-        ChatUser user = userService.getUserById(currentUserId);
-        foundUsers.add(user);
         userIds.add(currentUserId);
 
-        Chatroom chatroom = new Chatroom(request.getTitle(), userIds, null);
+        List<ChatUser> foundUsers = userService.getAllById(userIds);
+
+        Chatroom chatroom = new Chatroom(request.getTitle(), foundUsers, null);
         Chatroom savedChatroom = chatroomRepository.save(chatroom);
 
-        userService.addToChatroom(foundUsers, savedChatroom);
+        userService.addToChatroom(userIds, savedChatroom);
 
         return new ChatroomDTO(savedChatroom);
     }
